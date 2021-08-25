@@ -24,6 +24,12 @@ class CMCClient(BaseAPIClient):
         path = self.endpoints.map.value
         result = self.get(path)
         if result.status_code == HTTPStatus.OK:
-            return result.json()
+            return result.json()["data"]
         return result
 
+    def get_info(self):
+        path = self.endpoints.info.value
+        result = self.get(path)
+        if result.status_code == HTTPStatus.OK:
+            return result.json()
+        return result

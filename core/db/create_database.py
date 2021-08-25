@@ -18,24 +18,26 @@ def create_database(load_fake_data: bool = True):
 def _load_cmc_data(session: Session):
     cmc = CMCService()
     current_cmc_data = cmc.get_id_map()
-    for curr in current_cmc_data.get("data"):
+    logger.error(len(current_cmc_data))
+    for curr in current_cmc_data:
         platform_slug = None
         if curr.get("platform"):
 
             platform_data = curr["platform"]
             platform_slug = platform_data["slug"]
             platform = Platform(
+                id=platform_data["id"],
                 slug=platform_slug,
                 name=platform_data["name"],
                 ticker=platform_data["symbol"],
-                cmc_id=platform_data["id"],
             )
-            existing = session.query(Platform).filter_by(slug=platform.slug).first()
+            existing = session.query(Platform).filter_by(id=platform.id).first()
             if not existing:  # Check to existing platform in current session
                 session.add(platform)
             else:
                 logger.debug(f"Tried to insert existing {platform}")
         currency = Currency(
+            id=curr["id"],
             slug=curr["slug"],
             ticker=curr["symbol"],
             last_update=datetime.utcnow(),
@@ -43,7 +45,7 @@ def _load_cmc_data(session: Session):
             cmc_current_rank=curr.get("rank"),
             platform=platform_slug,
         )
-        existing = session.query(Currency).filter_by(slug=currency.slug).first()
+        existing = session.query(Currency).filter_by(id=currency.id).first()
         if not existing:  # Check to existing currency in current session
             session.add(currency)
         else:

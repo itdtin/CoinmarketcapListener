@@ -8,7 +8,8 @@ from .database import Base
 class Currency(Base):
     __tablename__ = "currencies"
 
-    slug = Column(String, primary_key=True, unique=True)
+    id = Column(Integer, primary_key=True)
+    slug = Column(String, unique=True)
     ticker = Column(String)
     last_update = Column(DateTime, default=datetime.utcnow())
     is_active = Column(Integer)
@@ -17,6 +18,7 @@ class Currency(Base):
 
     def __init__(
         self,
+        id: int,
         slug: str,
         ticker: str,
         last_update: datetime,
@@ -24,6 +26,7 @@ class Currency(Base):
         cmc_current_rank: int = None,
         platform: str = None,
     ):
+        self.id = id
         self.slug = slug
         self.ticker = ticker
         self.last_update = last_update
@@ -32,5 +35,5 @@ class Currency(Base):
         self.platform = platform
 
     def __repr__(self):
-        info: str = f"Currency: {self.ticker}, slug: {self.slug}, active:{True if self.is_active == 1 else False}, " f"rank:{self.cmc_current_rank}"
+        info: str = f"Currency: {self.ticker}, id:{self.id}, slug: {self.slug}, " f"active:{True if self.is_active == 1 else False}, rank:{self.cmc_current_rank}"
         return info
