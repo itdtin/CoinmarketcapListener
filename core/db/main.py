@@ -15,4 +15,4 @@ if __name__ == "__main__":
     if not db_is_created:
         db_creator.create_database()
     else:
-        db_creator._load_cmc_data(Session())
+        db_creator._load_cmc_data()

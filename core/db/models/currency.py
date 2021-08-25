@@ -35,5 +35,5 @@ class Currency(Base):
         self.platform = platform
 
     def __repr__(self):
-        info: str = f"Currency: {self.ticker}, id:{self.id}, slug: {self.slug}, " f"active:{True if self.is_active == 1 else False}, rank:{self.cmc_current_rank}"
+        info = f"Currency: {self.ticker}, id:{self.id}, slug: {self.slug}, active:{True if self.is_active == 1 else False}, rank:{self.cmc_current_rank}"
         return info
