@@ -1,16 +1,16 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Table
 
 from .database import Base
 
 
 class Currency(Base):
-    __tablename__ = "currency"
+    __tablename__ = "currencies"
 
-    slug = Column(String, primary_key=True)
+    slug = Column(String, primary_key=True, unique=True)
     ticker = Column(String)
-    last_update = Column(DateTime, default=datetime.utcnow)
+    last_update = Column(DateTime, default=datetime.utcnow())
     is_active = Column(Integer)
     cmc_current_rank = Column(Integer, nullable=True)
     platform = Column(String, ForeignKey("platforms.slug"), nullable=True)
@@ -32,5 +32,5 @@ class Currency(Base):
         self.platform = platform
 
     def __repr__(self):
-        info: str = f"Currency: {self.ticker}, slug: {self.slug}, active:{True if self.is_active == 1 else False}, rank:{self.cmc_current_rank}"
+        info: str = f"Currency: {self.ticker}, slug: {self.slug}, active:{True if self.is_active == 1 else False}, " f"rank:{self.cmc_current_rank}"
         return info
