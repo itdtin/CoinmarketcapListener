@@ -14,7 +14,7 @@ class Currency(Base):
     last_update = Column(DateTime, default=datetime.utcnow())
     is_active = Column(Integer)
     cmc_current_rank = Column(Integer, nullable=True)
-    platform = Column(String, ForeignKey("platforms.slug"), nullable=True)
+    platform = Column(String, ForeignKey("platforms.id"), nullable=True)
 
     def __init__(
         self,

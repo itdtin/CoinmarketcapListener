@@ -1,4 +1,3 @@
-from typing import List, Union
 from http import HTTPStatus
 
 from core.clients.api.baseclient import BaseAPIClient
@@ -6,11 +5,14 @@ from coinmarketcap.endpoints import CMCEndpoints
 from core.utils.http_constants import HttpHeaderValues, HttpHeadersKeys
 
 
-class CMCClient(BaseAPIClient):
+class Coinmarketcap(BaseAPIClient):
     """Class for working with Sapio Exemplar"""
 
-    def __init__(self, base_url: str, api_token: str):
-        super(CMCClient, self).__init__(base_url, api_token)
+    api_token = "2229a7b0-ebf1-403f-8470-7c32d0feefa2"
+    base_url = "https://pro-api.coinmarketcap.com/"
+
+    def __init__(self, base_url: str = base_url, api_token: str = api_token):
+        super(Coinmarketcap, self).__init__(base_url, api_token)
         self.headers = {
             HttpHeadersKeys.cmc_api_token.value: api_token,
             HttpHeadersKeys.accept.value: HttpHeaderValues.app_json.value,
