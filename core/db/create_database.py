@@ -25,18 +25,20 @@ def _load_cmc_data():
         if curr.get("platform"):
             platform_data = curr["platform"]
             platform_id = platform_data["id"]
-            platform = create_platform(platform_data)
-            existing = session.query(Platform).filter_by(id=platform.id).first()
+            existing = session.query(Platform).filter_by(id=platform_id).first()
             if not existing:  # Check to existing platform in current session
+                platform = create_platform(platform_data)
                 session.add(platform)
             else:
-                logger.debug(f"Tried to insert existing {platform}")
-        currency = create_currency(curr, platform_id)
-        existing = session.query(Currency).filter_by(id=currency.id).first()
+                logger.debug(
+                    f"Tried to insert existing platform with id: {platform_id}"
+                )
+        existing = session.query(Currency).filter_by(id=curr["id"]).first()
         if not existing:  # Check to existing currency in current session
+            currency = create_currency(curr, platform_id)
             session.add(currency)
         else:
-            logger.debug(f"Tried to insert existing {currency}")
+            logger.debug(f"Tried to insert existing currency with slug: {curr['slug']}")
     session.commit()
     session.close()
 

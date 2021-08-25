@@ -8,8 +8,8 @@ from .database import Base
 class Currency(Base):
     __tablename__ = "currencies"
 
-    id = Column(Integer, primary_key=True)
-    slug = Column(String, unique=True)
+    id = Column(Integer, primary_key=True, unique=True)
+    slug = Column(String)
     ticker = Column(String)
     last_update = Column(DateTime, default=datetime.utcnow())
     is_active = Column(Integer)

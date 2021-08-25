@@ -1,18 +1,18 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
 from .database import Base
 
 
-class Platform(Base):
-    __tablename__ = "platforms"
+class Rank(Base):
+    __tablename__ = "ranks"
 
-    slug = Column(String)
-    name = Column(String)
+    currency_id = Column(Integer, ForeignKey("currencies.id"))
+    # a = Column(String)
     ticker = Column(String)
-    id = Column(Integer, primary_key=True, unique=True)
+    id = Column(Integer, primary_key=True)
     tokens_builded_on = relationship("Currency")
 
     def __init__(self, slug: str, name: str, ticker: str, id: int):
