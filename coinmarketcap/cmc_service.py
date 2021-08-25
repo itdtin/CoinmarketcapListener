@@ -9,6 +9,9 @@ class CMCService(CMCClient):
         super(CMCService, self).__init__(self.base_url, self.api_token)
 
 
+
+
 if __name__ == '__main__':
     c = CMCService()
     d = c.get_id_map()
+    print(d)
