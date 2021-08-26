@@ -1,11 +1,12 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Table
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy.orm import relationship
 
-from .database import Base
+from app import db
 
 
-class Currency(Base):
+class Currency(db.Model):
     __tablename__ = "currencies"
 
     id = Column(Integer, primary_key=True, unique=True)
@@ -37,3 +38,22 @@ class Currency(Base):
     def __repr__(self):
         info = f"Currency: {self.ticker}, id:{self.id}, slug: {self.slug}, active:{True if self.is_active == 1 else False}, rank:{self.cmc_current_rank}"
         return info
+
+
+class Platform(db.Model):
+    __tablename__ = "platforms"
+
+    slug = Column(String)
+    name = Column(String)
+    ticker = Column(String)
+    id = Column(Integer, primary_key=True, unique=True)
+    tokens_builded_on = relationship("Currency")
+
+    def __init__(self, slug: str, name: str, ticker: str, id: int):
+        self.slug = slug
+        self.name = name
+        self.ticker = ticker
+        self.id = id
+
+    def __repr__(self):
+        return f"Platform:{self.name}, ticker:{self.ticker}, slug:{self.slug}, cmc_id:{self.id}"

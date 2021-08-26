@@ -3,6 +3,7 @@ from http import HTTPStatus
 from core.clients.api.baseclient import BaseAPIClient
 from coinmarketcap.endpoints import CMCEndpoints
 from core.utils.http_constants import HttpHeaderValues, HttpHeadersKeys
+from core.logger.logger import logger
 
 
 class Coinmarketcap(BaseAPIClient):

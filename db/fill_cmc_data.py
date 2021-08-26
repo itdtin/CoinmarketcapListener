@@ -1,25 +1,13 @@
 from datetime import datetime
 
-from sqlalchemy.exc import IntegrityError
-
 from core.logger.logger import logger
-from core.db.models.database import create_db, Session
-from core.db.models.currency import Currency
-from core.db.models.platform import Platform
+from db.cmc_entities_models import Currency, Platform
 from coinmarketcap.cmc_client import Coinmarketcap
 
 
-def create_database(load_fake_data: bool = True):
-    create_db()
-    if load_fake_data:
-        _load_cmc_data()
-
-
-def _load_cmc_data():
+def fill_cmc_data(session):
     cmc = Coinmarketcap()
-    session = Session()
     current_cmc_data = cmc.get_id_map()
-    logger.error(len(current_cmc_data))
     for curr in current_cmc_data:
         platform_id = None
         if curr.get("platform"):
@@ -41,6 +29,7 @@ def _load_cmc_data():
             logger.debug(f"Tried to insert existing currency with slug: {curr['slug']}")
     session.commit()
     session.close()
+    logger.error(f"Updated CoinMarketCap data")
 
 
 def create_platform(platform_data: dict) -> Platform:
