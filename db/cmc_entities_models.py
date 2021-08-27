@@ -1,59 +1,25 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from app import db
+from db.basicmodels import ComparableEntity
 
 
-class Currency(db.Model):
+class Currency(ComparableEntity, db.Model):
     __tablename__ = "currencies"
 
-    id = Column(Integer, primary_key=True, unique=True)
-    slug = Column(String)
-    ticker = Column(String)
-    last_update = Column(DateTime, default=datetime.utcnow())
-    is_active = Column(Integer)
-    cmc_current_rank = Column(Integer, nullable=True)
-    platform = Column(String, ForeignKey("platforms.id"), nullable=True)
-
-    def __init__(
-        self,
-        id: int,
-        slug: str,
-        ticker: str,
-        last_update: datetime,
-        is_active: int,
-        cmc_current_rank: int = None,
-        platform: str = None,
-    ):
-        self.id = id
-        self.slug = slug
-        self.ticker = ticker
-        self.last_update = last_update
-        self.is_active = is_active
-        self.cmc_current_rank = cmc_current_rank
-        self.platform = platform
-
-    def __repr__(self):
-        info = f"Currency: {self.ticker}, id:{self.id}, slug: {self.slug}, active:{True if self.is_active == 1 else False}, rank:{self.cmc_current_rank}"
-        return info
+    id = db.Column(db.Integer, primary_key=True, unique=True)
+    slug = db.Column(db.String)
+    ticker = db.Column(db.String)
+    cmc_current_rank = db.Column(db.Integer, nullable=True)
 
 
-class Platform(db.Model):
-    __tablename__ = "platforms"
-
-    slug = Column(String)
-    name = Column(String)
-    ticker = Column(String)
-    id = Column(Integer, primary_key=True, unique=True)
-    tokens_builded_on = relationship("Currency")
-
-    def __init__(self, slug: str, name: str, ticker: str, id: int):
-        self.slug = slug
-        self.name = name
-        self.ticker = ticker
-        self.id = id
-
-    def __repr__(self):
-        return f"Platform:{self.name}, ticker:{self.ticker}, slug:{self.slug}, cmc_id:{self.id}"
+class RankHistorical(ComparableEntity, db.Model):
+    __tablename__ = "rank_historical"
+    id = db.Column(db.Integer, primary_key=True)
+    cmc_id = db.Column(db.Integer, db.ForeignKey("currencies.id"))
+    slug = db.Column(db.String)
+    ticker = db.Column(db.String)
+    last_update = db.Column(db.Date, default=datetime.utcnow().date())
+    rank = db.Column(db.Integer, nullable=True)
