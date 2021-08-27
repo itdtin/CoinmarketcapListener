@@ -9,10 +9,7 @@ from core.logger.logger import logger
 class Coinmarketcap(BaseAPIClient):
     """Class for working with Sapio Exemplar"""
 
-    api_token = "2229a7b0-ebf1-403f-8470-7c32d0feefa2"
-    base_url = "https://pro-api.coinmarketcap.com/"
-
-    def __init__(self, base_url: str = base_url, api_token: str = api_token):
+    def __init__(self, base_url: str, api_token: str):
         super(Coinmarketcap, self).__init__(base_url, api_token)
         self.headers = {
             HttpHeadersKeys.cmc_api_token.value: api_token,
