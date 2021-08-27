@@ -1,11 +1,13 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Union, List
+
+import pandas as pd
 
 from coinmarketcap.cmc_client import Coinmarketcap
 from core.logger.logger import logger
 
 
-class RankListener:
+class Ranking:
     def __init__(self, cmc_base_url: str, cmc_api_token: str):
         self.cmc = Coinmarketcap(cmc_base_url, cmc_api_token)
 
@@ -59,16 +61,12 @@ class RankListener:
 
         if to_be_updated:
             to_be_updated.cmc_id = currency_data["id"]
-            to_be_updated.slug = currency_data["slug"]
-            to_be_updated.ticker = currency_data["symbol"]
             to_be_updated.last_update = datetime.utcnow()
             to_be_updated.rank = currency_data.get("rank")
             return to_be_updated
         else:
             currency = RankHistorical(
                 cmc_id=currency_data["id"],
-                slug=currency_data["slug"],
-                ticker=currency_data["symbol"],
                 last_update=datetime.utcnow(),
                 rank=currency_data.get("rank"),
             )
@@ -80,5 +78,32 @@ class RankListener:
         """Get top gainers
         :param session: session instance
         :param parameter: parameter via which will sort
-        :param kwargs -
+        :param kwargs - days=<int>, weeks=<int>, months=<int>
         """
+        from db.cmc_entities_models import RankHistorical
+
+        current_date = datetime.utcnow().date()
+        curr_date_str = current_date.strftime("%Y-%m-%d")
+        if kwargs.get("days"):
+            target_date = current_date - timedelta(days=kwargs.get("days"))
+            target_date_str = target_date.strftime("%Y-%m-%d")
+        d = (
+            session.query(RankHistorical)
+            .filter(RankHistorical.last_update.between(target_date_str, curr_date_str))
+            .all()
+        )
+
+        from core.utils.new_encoder import AlchemyEncoder
+        import json
+
+        # todo handle request
+        f"select cmc_id, min_max_date_rank_diff from(" f"select cmc_id, last_update as created_date, rank as value, " f"(first_value(rank) over(partition by cmc_id order by last_update asc) - " f"first_value(rank) over(partition by cmc_id order by last_update desc)) as min_max_date_rank_diff," f"row_number() over(PARTITION by cmc_id order by last_update) num," f"rank() over(partition by cmc_id order by rank) rank_rank," f"DENSE_RANK () over(partition by cmc_id order by rank) dense_rank_rank " f"from rank_historical rh " f"where last_update between '2021-08-24' and '2021-08-27') group by cmc_id"
+
+
+if __name__ == "__main__":
+    from app import db
+
+    CMC_API_TOKEN = "2229a7b0-ebf1-403f-8470-7c32d0feefa2"
+    CMC_BASE_URL = "https://pro-api.coinmarketcap.com/"
+    r = Ranking(CMC_BASE_URL, CMC_API_TOKEN)
+    d = r.get_top_gainers(db.session, days=1)
