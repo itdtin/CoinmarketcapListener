@@ -34,7 +34,7 @@ class Ranking:
             if not currency == to_update:
                 self.create_update_currency(currency_data, to_update)
                 session.commit()
-                logger.error(f"Updated Currency: {currency_data['slug']}")
+                logger.debug(f"Updated Currency: {currency_data['slug']}")
 
     @staticmethod
     def create_update_currency(currency_data: dict, to_be_updated=None):
@@ -72,32 +72,32 @@ class Ranking:
             )
             return currency
 
-    def get_top_gainers(
-        self, session, parameter: Union[str, List[str]] = "rank", **kwargs
-    ):
+    @staticmethod
+    def get_top_gainers(**kwargs):
         """Get top gainers
-        :param session: session instance
-        :param parameter: parameter via which will sort
         :param kwargs - days=<int>, weeks=<int>, months=<int>
         """
+        global target_date_str
         from db.cmc_entities_models import RankHistorical
 
-        current_date = datetime.utcnow().date()
+        current_date = datetime.utcnow() + timedelta(days=1)
         curr_date_str = current_date.strftime("%Y-%m-%d")
         if kwargs.get("days"):
             target_date = current_date - timedelta(days=kwargs.get("days"))
             target_date_str = target_date.strftime("%Y-%m-%d")
-        d = (
-            session.query(RankHistorical)
-            .filter(RankHistorical.last_update.between(target_date_str, curr_date_str))
-            .all()
+
+        query = (
+            f"select cmc_id, current_value, gain, max(created_date), c2.ticker, c2.slug "
+            f"from (select cmc_id, last_update as created_date, rank as current_value, "
+            f"(last_value(rank) over(partition by cmc_id order by last_update) - "
+            f"first_value(rank) over(partition by cmc_id order by last_update)) as gain "
+            f"from rank_historical rh where last_update between '{target_date_str}' and '{curr_date_str}') "
+            f"left join currencies c2 on cmc_id=c2.id where gain != 0 group by cmc_id order by gain desc"
         )
+        from app import db
 
-        from core.utils.new_encoder import AlchemyEncoder
-        import json
-
-        # todo handle request
-        f"select cmc_id, min_max_date_rank_diff from(" f"select cmc_id, last_update as created_date, rank as value, " f"(first_value(rank) over(partition by cmc_id order by last_update asc) - " f"first_value(rank) over(partition by cmc_id order by last_update desc)) as min_max_date_rank_diff," f"row_number() over(PARTITION by cmc_id order by last_update) num," f"rank() over(partition by cmc_id order by rank) rank_rank," f"DENSE_RANK () over(partition by cmc_id order by rank) dense_rank_rank " f"from rank_historical rh " f"where last_update between '2021-08-24' and '2021-08-27') group by cmc_id"
+        d = db.engine.execute(query)
+        return d.all()[:100]
 
 
 if __name__ == "__main__":

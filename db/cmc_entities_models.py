@@ -19,5 +19,5 @@ class RankHistorical(ComparableEntity, db.Model):
     __tablename__ = "rank_historical"
     id = db.Column(db.Integer, primary_key=True)
     cmc_id = db.Column(db.Integer, db.ForeignKey("currencies.id"))
-    last_update = db.Column(db.Date, default=datetime.utcnow().date())
+    last_update = db.Column(db.DateTime, default=datetime.utcnow())
     rank = db.Column(db.Integer, nullable=True)
