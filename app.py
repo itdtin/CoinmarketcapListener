@@ -76,8 +76,8 @@ def respond():
         bot.sendMessage(chat_id=chat_id, text=data)
 
     elif text == "count":
-        data = db.engine.execute("SELECT COUNT(*) from rank_historical")
-        bot.sendMessage(chat_id=chat_id, text=data)
+        data = db.session.query(RankHistorical).all
+        bot.sendMessage(chat_id=chat_id, text=len(data))
     else:
         try:
             # clear the message we got from any non alphabets
