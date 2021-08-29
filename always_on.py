@@ -1,5 +1,4 @@
 from ranking import Ranking
-from apscheduler.schedulers.background import BackgroundScheduler
 
 from app import db
 
