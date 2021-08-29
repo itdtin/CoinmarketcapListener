@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
 from ranking import Ranking
+from core.logger.logger import logger
 
 
 def sensor():
@@ -28,6 +29,7 @@ db = SQLAlchemy(app)
 global bot
 global TOKEN
 TOKEN = app.config.get("TG_API_TOKEN")
+logger.error(TOKEN)
 bot = telegram.Bot(token=TOKEN)
 
 with app.app_context():
