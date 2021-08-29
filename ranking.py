@@ -1,7 +1,4 @@
 from datetime import datetime, timedelta
-from typing import Union, List
-
-import pandas as pd
 
 from coinmarketcap.cmc_client import Coinmarketcap
 from core.logger.logger import logger
