@@ -17,7 +17,7 @@ def sensor():
     rank_listener.fill_cmc_data(db.session)
 
 
-sched = BackgroundScheduler(daemon=True)
+sched = BackgroundScheduler(daemon=True, timezone="UTC")
 sched.add_job(sensor, "interval", days=1)
 sched.start()
 
