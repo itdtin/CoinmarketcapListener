@@ -76,7 +76,7 @@ def respond():
         bot.sendMessage(chat_id=chat_id, text=data)
 
     elif text == "count":
-        data = db.session.query(RankHistorical).all
+        data = db.session.query(RankHistorical).all()
         bot.sendMessage(chat_id=chat_id, text=len(data))
     else:
         try:
