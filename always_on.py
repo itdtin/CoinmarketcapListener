@@ -8,6 +8,4 @@ CMC_BASE_URL = "https://pro-api.coinmarketcap.com/"
 
 if __name__ == "__main__":
     r = Ranking(CMC_BASE_URL, CMC_API_TOKEN, db)
-    sched = BackgroundScheduler(daemon=True, timezone="UTC")
-    sched.add_job(r.fill_cmc_data, "interval", seconds=30)
-    sched.start()
+    r.fill_cmc_data()
