@@ -15,6 +15,7 @@ class Config(object):
     CMC_BASE_URL = ""
 
     TG_BOT_TOKEN = ""
+    TG_WEBHOOK = ""
 
 
 class ProductionConfig(Config):
@@ -28,6 +29,7 @@ class DevelopmentConfig(Config):
     CMC_BASE_URL = "https://pro-api.coinmarketcap.com/"
 
     TG_BOT_TOKEN = "1966936694:AAGWO8DX-3d1iTCfejjS_tJBiDeAVd7trXs"
+    TG_WEBHOOK = "https://coinmarketcaplistener.herokuapp.com/"
 
 
 class TestingConfig(Config):

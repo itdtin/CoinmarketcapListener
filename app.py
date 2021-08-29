@@ -39,7 +39,7 @@ with app.app_context():
     rank_listener = Ranking(
         app.config.get("CMC_BASE_URL"), app.config.get("CMC_API_TOKEN")
     )
-    # rank_listener.fill_cmc_data(db.session)
+    rank_listener.fill_cmc_data(db.session)
 migrate = Migrate(app, db)
 
 
