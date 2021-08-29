@@ -95,12 +95,3 @@ class Ranking:
 
         d = db.engine.execute(query)
         return d.all()[:100]
-
-
-if __name__ == "__main__":
-    from app import db
-
-    CMC_API_TOKEN = "2229a7b0-ebf1-403f-8470-7c32d0feefa2"
-    CMC_BASE_URL = "https://pro-api.coinmarketcap.com/"
-    r = Ranking(CMC_BASE_URL, CMC_API_TOKEN)
-    d = r.get_top_gainers(db.session, days=1)

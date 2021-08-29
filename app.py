@@ -46,7 +46,7 @@ migrate = Migrate(app, db)
 @app.route("/")
 def hello_world():
 
-    data = rank_listener.get_top_gainers(days=1)
+    data = db.session.query(Currency).all()
     return str(data)
 
 
