@@ -28,7 +28,7 @@ db = SQLAlchemy(app)
 
 global bot
 global TOKEN
-TOKEN = app.config.get("TG_API_TOKEN")
+TOKEN = app.config.get("TG_BOT_TOKEN")
 logger.error(f"token {TOKEN}")
 bot = telegram.Bot(token=TOKEN)
 
