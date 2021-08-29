@@ -74,6 +74,10 @@ def respond():
     elif text == "5 дней":
         data = rank_listener.get_top_gainers(days=5)
         bot.sendMessage(chat_id=chat_id, text=data)
+
+    elif text == "count":
+        data = db.engine.execute("SELECT COUNT(*) from rank_historical")
+        bot.sendMessage(chat_id=chat_id, text=data)
     else:
         try:
             # clear the message we got from any non alphabets
