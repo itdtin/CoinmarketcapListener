@@ -6,32 +6,35 @@ from core.logger.logger import logger
 
 
 class Ranking:
-    def __init__(self, cmc_base_url: str, cmc_api_token: str):
+    def __init__(self, cmc_base_url: str, cmc_api_token: str, db):
         self.cmc = Coinmarketcap(cmc_base_url, cmc_api_token)
+        self.db = db
 
-    def fill_cmc_data(self, session):
+    def fill_cmc_data(self):
         current_cmc_data = self.cmc.get_id_map()
         for curr in current_cmc_data:
-            self.fill_and_update_currency_and_related_tables(session, curr)
-        session.commit()
-        session.close()
+            self.fill_and_update_currency_and_related_tables(curr)
+        self.db.session.commit()
+        self.db.session.close()
         logger.error(f"Updated CoinMarketCap data")
 
-    def fill_and_update_currency_and_related_tables(self, session, currency_data: dict):
+    def fill_and_update_currency_and_related_tables(self, currency_data: dict):
         """Fill Currency record and related Platform record and fill rank_historical record"""
         from db.cmc_entities_models import Currency
 
-        existing = session.query(Currency).filter_by(id=currency_data["id"]).first()
+        existing = (
+            self.db.session.query(Currency).filter_by(id=currency_data["id"]).first()
+        )
         currency = self.create_update_currency(currency_data)
         rank = self.create_update_rank_historical(currency_data)
-        session.add(rank)
+        self.db.session.add(rank)
         if not existing:  # Check to existing currency in current session
-            session.add(currency)
+            self.db.session.add(currency)
         else:
             to_update = Currency.query.filter_by(id=currency_data["id"]).first()
             if not currency == to_update:
                 self.create_update_currency(currency_data, to_update)
-                session.commit()
+                self.db.session.commit()
                 logger.debug(f"Updated Currency: {currency_data['slug']}")
 
     @staticmethod
@@ -70,9 +73,9 @@ class Ranking:
             )
             return currency
 
-    @staticmethod
-    def get_top_gainers(count_result: int, **kwargs):
+    def get_top_gainers(self, count_result: int, **kwargs):
         """Get top gainers
+        :param count_result: count of result
         :param kwargs - days=<int>, weeks=<int>, months=<int>
         """
         global target_date_str
@@ -95,8 +98,6 @@ class Ranking:
             f"from rank_historical rh where last_update between '{target_date_str}' and '{curr_date_str}') "
             f"left join currencies c2 on cmc_id=c2.id where gain != 0 group by cmc_id order by gain desc"
         )
-        from app import db
-
-        d = db.engine.execute(query).all()
+        d = self.db.engine.execute(query).all()
         result = [{k: v for k, v in record.items()} for record in d]
         return result[:count_result]

@@ -14,7 +14,7 @@ from core.logger.logger import logger
 def sensor():
     """ Function for test purposes. """
 
-    rank_listener.fill_cmc_data(db.session)
+    rank_listener.fill_cmc_data()
 
 
 sched = BackgroundScheduler(daemon=True, timezone="UTC")
@@ -37,9 +37,9 @@ with app.app_context():
 
     db.create_all()
     rank_listener = Ranking(
-        app.config.get("CMC_BASE_URL"), app.config.get("CMC_API_TOKEN")
+        app.config.get("CMC_BASE_URL"), app.config.get("CMC_API_TOKEN"), db
     )
-    rank_listener.fill_cmc_data(db.session)
+    rank_listener.fill_cmc_data()
 migrate = Migrate(app, db)
 
 
@@ -73,11 +73,13 @@ def respond():
 
     elif text == "5 дней":
         data = rank_listener.get_top_gainers(10, days=5)
-        bot.sendMessage(chat_id=chat_id, text=data)
+        bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
 
     elif text == "count":
         data = db.session.query(RankHistorical).all()
-        bot.sendMessage(chat_id=chat_id, text=len(data))
+        bot.sendMessage(
+            chat_id=chat_id, text=str(len(data)), reply_to_message_id=msg_id
+        )
     else:
         try:
             # clear the message we got from any non alphabets
