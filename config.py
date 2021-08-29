@@ -1,6 +1,6 @@
 import os
 
-DATABASE_NAME = "ranklistener.sqlite"
+
 path = os.path.abspath(os.curdir)
 
 
@@ -8,7 +8,7 @@ class Config(object):
     DEBUG = False
     TESTING = False
     SQLALCHEMY_DATABASE_URI = "sqlite://:memory:"
-
+    DATABASE_NAME = "ranklistener.sqlite"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     CMC_API_TOKEN = ""
@@ -26,6 +26,7 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    DATABASE_NAME = "ranklistener.sqlite"
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{path}/{DATABASE_NAME}"
     CMC_API_TOKEN = "2229a7b0-ebf1-403f-8470-7c32d0feefa2"
     CMC_BASE_URL = "https://pro-api.coinmarketcap.com/"
