@@ -14,6 +14,8 @@ class Config(object):
     CMC_API_TOKEN = ""
     CMC_BASE_URL = ""
 
+    TG_BOT_TOKEN = ""
+
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = "mysql://user@localhost/foo"
@@ -24,6 +26,8 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{path}/{DATABASE_NAME}"
     CMC_API_TOKEN = "2229a7b0-ebf1-403f-8470-7c32d0feefa2"
     CMC_BASE_URL = "https://pro-api.coinmarketcap.com/"
+
+    TG_BOT_TOKEN = "1966936694:AAGWO8DX-3d1iTCfejjS_tJBiDeAVd7trXs"
 
 
 class TestingConfig(Config):
