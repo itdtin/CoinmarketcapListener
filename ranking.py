@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 from coinmarketcap.cmc_client import Coinmarketcap
 from core.logger.logger import logger
@@ -82,6 +83,9 @@ class Ranking:
         if kwargs.get("days"):
             target_date = current_date - timedelta(days=kwargs.get("days"))
             target_date_str = target_date.strftime("%Y-%m-%d")
+        if kwargs.get("months"):
+            target_date = current_date - relativedelta(months=kwargs.get("days"))
+            target_date_str = target_date.strftime("%Y-%m-%d")
 
         query = (
             f"select cmc_id, current_value, gain, max(created_date), c2.ticker, c2.slug "
@@ -93,5 +97,6 @@ class Ranking:
         )
         from app import db
 
-        d = db.engine.execute(query)
-        return d.all()[:100]
+        d = db.engine.execute(query).all()
+        result = [{k: v for k, v in record.items()} for record in d]
+        return result[:100]
