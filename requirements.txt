@@ -39,7 +39,6 @@ PyYAML==5.4.1
 requests==2.26.0
 six==1.16.0
 SQLAlchemy==1.4.23
-telebot==0.0.4
 tenacity==8.0.1
 toml==0.10.2
 tornado==6.1
