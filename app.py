@@ -46,7 +46,7 @@ migrate = Migrate(app, db)
 @app.route("/")
 def hello_world():
 
-    data = rank_listener.get_top_gainers(days=5)
+    data = rank_listener.get_top_gainers(10, days=5)
     return str(data)
 
 
@@ -72,7 +72,7 @@ def respond():
         bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
 
     elif text == "5 дней":
-        data = rank_listener.get_top_gainers(days=5)
+        data = rank_listener.get_top_gainers(10, days=5)
         bot.sendMessage(chat_id=chat_id, text=data)
 
     elif text == "count":
