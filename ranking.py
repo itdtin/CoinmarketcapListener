@@ -95,8 +95,8 @@ class Ranking:
             f"from rank_historical rh where last_update between '{target_date_str}' and '{curr_date_str}') "
             f"left join currencies c2 on cmc_id=c2.id where gain != 0 group by cmc_id order by gain desc"
         )
-        from app import db
+        import app
 
-        d = db.engine.execute(query).all()
+        d = app.db.engine.execute(query).all()
         result = [{k: v for k, v in record.items()} for record in d]
-        return result[:100]
+        return result[: app.config.RESULT_COUNT]

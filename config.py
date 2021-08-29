@@ -17,6 +17,8 @@ class Config(object):
     TG_BOT_TOKEN = ""
     TG_WEBHOOK = ""
 
+    RESULT_COUNT = 10
+
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = "mysql://user@localhost/foo"
@@ -30,6 +32,8 @@ class DevelopmentConfig(Config):
 
     TG_BOT_TOKEN = "1966936694:AAGWO8DX-3d1iTCfejjS_tJBiDeAVd7trXs"
     TG_WEBHOOK = "https://coinmarketcaplistener.herokuapp.com/"
+
+    RESULT_COUNT = 10
 
 
 class TestingConfig(Config):

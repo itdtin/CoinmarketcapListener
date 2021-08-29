@@ -18,7 +18,7 @@ def sensor():
 
 
 sched = BackgroundScheduler(daemon=True, timezone="UTC")
-sched.add_job(sensor, "interval", seconds=30)
+sched.add_job(sensor, "interval", days=1)
 sched.start()
 
 
@@ -46,7 +46,7 @@ migrate = Migrate(app, db)
 @app.route("/")
 def hello_world():
 
-    data = db.session.query(Currency).all()
+    data = rank_listener.get_top_gainers(days=5)
     return str(data)
 
 
