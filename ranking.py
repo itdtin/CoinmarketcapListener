@@ -99,5 +99,5 @@ class Ranking:
             f"left join currencies c2 on cmc_id=c2.id where gain != 0 group by cmc_id order by gain desc"
         )
         d = self.db.engine.execute(query).all()
-        result = [{k: v for k, v in record.items()} for record in d]
-        return result[:count_result]
+        result = [{k: v for k, v in record.items()} for record in d[:count_result]]
+        return result
