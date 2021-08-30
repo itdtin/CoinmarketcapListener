@@ -7,8 +7,9 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-from ranking import Ranking
+from coinmarketcap.cmc_client import Coinmarketcap
 from core.logger.logger import logger
+from ranking import Ranking
 
 
 def sensor():
@@ -36,7 +37,7 @@ with app.app_context():
     from db.cmc_entities_models import Currency, RankHistorical
 
     db.create_all()
-    rank_listener = Ranking(
+    rank_listener = Coinmarketcap(
         app.config.get("CMC_BASE_URL"), app.config.get("CMC_API_TOKEN"), db
     )
     rank_listener.fill_cmc_data()
@@ -45,8 +46,8 @@ migrate = Migrate(app, db)
 
 @app.route("/")
 def hello_world():
-
-    data = rank_listener.get_top_gainers(10, days=5)
+    print(db.engine)
+    data = Ranking.get_top_gainers(engine=db.engine, count_result=100, days=5)
     return str(data)
 
 
@@ -72,7 +73,7 @@ def respond():
         bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
 
     elif text == "5 дней":
-        data = rank_listener.get_top_gainers(10, days=5)
+        data = Ranking.get_top_gainers(db.engine, days=5)
         bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
 
     elif text == "count":
