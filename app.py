@@ -94,7 +94,7 @@ def respond():
             f"3. <b>Months:</b> 'count month' or 'count months' - show top gainers for past count of months.\n\n"
             f"4. <b>Period:</b> 'period date_start-date_end' - show top gainers for passed period.\n"
             f"<b>Note:</b> <i>Be aware the format of date_start and date_end is yyyy.mm.dd, "
-            f"so full query will be like: period 2021.08.01-2021.08.31<i>"
+            f"so full query will be like: period 2021.08.01-2021.08.31</i>"
         )
         bot.sendMessage(
             chat_id=chat_id,
