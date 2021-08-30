@@ -98,6 +98,10 @@ def respond():
                 period=period_range,
             )
             bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
+        else:
+            bot.sendMessage(
+                chat_id=chat_id, text="Wrong period format", reply_to_message_id=msg_id
+            )
 
     elif text == "count":
         data = db.session.query(RankHistorical).all()
