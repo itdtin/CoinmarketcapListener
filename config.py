@@ -27,7 +27,8 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     DEBUG = True
     DATABASE_NAME = "ranklistener.sqlite"
-    SQLALCHEMY_DATABASE_URI = f"sqlite:///{path}/{DATABASE_NAME}"
+    SQLALCHEMY_DATABASE_URI = "postgresql://jhxhmlfrsczmpq:ce76286c7fb921f72a8ac5853855b9cdfcc4ca35b28a20194eae6d10443a639e@ec2-52-208-221-89.eu-west-1.compute.amazonaws.com:5432/d9hsqa8jsotu37"
+    # SQLALCHEMY_DATABASE_URI = f"sqlite:///{path}/{DATABASE_NAME}"
     CMC_API_TOKEN = "2229a7b0-ebf1-403f-8470-7c32d0feefa2"
     CMC_BASE_URL = "https://pro-api.coinmarketcap.com/"
 
