@@ -105,7 +105,7 @@ def respond():
 
     elif len(text.strip().split(" ")) == 2:
         range_param = define_query_params(text)
-        if isinstance(range_param, dict) and not len(range_param.items()) > 0:
+        if isinstance(range_param, dict) and len(range_param.items()) > 0:
             data = Ranking.get_top_gainers(
                 engine=db.engine,
                 count_result=app.config.get("RESULT_COUNT"),
@@ -122,7 +122,6 @@ def respond():
             bot.sendMessage(
                 chat_id=chat_id,
                 text=f"<s>{text}</s>\nIncorrect query!!!",
-                reply_to_message_id=msg_id,
                 parse_mode=ParseMode.HTML,
             )
 
