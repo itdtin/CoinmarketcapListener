@@ -17,11 +17,7 @@ class Config(object):
     TG_BOT_TOKEN = ""
     TG_WEBHOOK = ""
 
-    RESULT_COUNT = 10
-
-
-class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = "mysql://user@localhost/foo"
+    RESULT_COUNT = 100
 
 
 class DevelopmentConfig(Config):
