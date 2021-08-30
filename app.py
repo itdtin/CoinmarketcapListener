@@ -84,8 +84,10 @@ def respond():
             reply_to_message_id=msg_id,
         )
 
-    elif len(text.split(" ")) == 2:
+    elif len(text.strip().split(" ")) == 2:
+        print("dpdpdpdpd")
         range_param = define_query_params(text)
+        print(range_param)
         data = Ranking.get_top_gainers(
             engine=db.engine, count_result=app.config.get("RESULT_COUNT"), **range_param
         )
