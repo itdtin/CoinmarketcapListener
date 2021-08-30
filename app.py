@@ -46,7 +46,6 @@ migrate = Migrate(app, db)
 
 @app.route("/")
 def hello_world():
-    print(db.engine)
     data = Ranking.get_top_gainers(
         engine=db.engine, count_result=app.config.get("RESULT_COUNT"), days=5
     )
@@ -68,17 +67,26 @@ def respond():
     # the first time you chat with the bot AKA the welcoming message
     if text == "/start":
         # print the welcoming message
-        bot_welcome = """
-       Welcome to coolAvatar bot, the bot is using the service from http://avatars.adorable.io/ to generate cool looking avatars based on the name you enter so please enter a name and the bot will reply with an avatar for your name.
-       """
+        bot_welcome = """Welcome to ranking bot"""
         # send the welcoming message
         bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
 
-    elif text == "5 дней":
+    elif text == "1 day":
         data = Ranking.get_top_gainers(
-            engine=db.engine, count_result=app.config.get("RESULT_COUNT"), days=5
+            engine=db.engine, count_result=app.config.get("RESULT_COUNT"), days=1
         )
-        print(data)
+        bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
+
+    elif text == "1 week":
+        data = Ranking.get_top_gainers(
+            engine=db.engine, count_result=app.config.get("RESULT_COUNT"), days=7
+        )
+        bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
+
+    elif text == "1 month":
+        data = Ranking.get_top_gainers(
+            engine=db.engine, count_result=app.config.get("RESULT_COUNT"), months=1
+        )
         bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
 
     elif text == "count":
