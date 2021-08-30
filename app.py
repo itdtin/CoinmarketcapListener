@@ -105,16 +105,23 @@ def respond():
 
     elif len(text.strip().split(" ")) == 2:
         range_param = define_query_params(text)
-        data = Ranking.get_top_gainers(
-            engine=db.engine, count_result=app.config.get("RESULT_COUNT"), **range_param
-        )
-        table = create_table_to_send(data)
-        bot.sendMessage(
-            chat_id=chat_id,
-            text=f"```{table}```",
-            reply_to_message_id=msg_id,
-            parse_mode=ParseMode.MARKDOWN_V2,
-        )
+        if isinstance(range_param, dict):
+            data = Ranking.get_top_gainers(
+                engine=db.engine,
+                count_result=app.config.get("RESULT_COUNT"),
+                **range_param,
+            )
+            table = create_table_to_send(data)
+            bot.sendMessage(
+                chat_id=chat_id,
+                text=f"```{table}```",
+                reply_to_message_id=msg_id,
+                parse_mode=ParseMode.MARKDOWN_V2,
+            )
+        else:
+            bot.sendMessage(
+                chat_id=chat_id, text=f"Incorrect query!!!", reply_to_message_id=msg_id
+            )
 
     else:
         try:
