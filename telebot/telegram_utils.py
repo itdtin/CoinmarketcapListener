@@ -21,15 +21,15 @@ def define_query_params(text: str):
     assert len(text.lower().split(" ")) == 2
     count, period = text.lower().split(" ")
     print(count)
-    if count.startwith("period"):
+    if count.startswith("period"):
         period = "period"
         count = text.lower().split("period")[1].strip()
         return dict({period: count})
-    elif period.startwith("month"):
+    elif period.startswith("month"):
         period = "months"
-    elif period.startwith("week"):
+    elif period.startswith("week"):
         period = "weeks"
-    elif period.startwith("day"):
+    elif period.startswith("day"):
         period = "days"
     else:
         logger.error(f"Undefined period: {period}")
