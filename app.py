@@ -12,7 +12,7 @@ from coinmarketcap.cmc_client import Coinmarketcap
 from core.logger.logger import logger
 from ranking import Ranking
 from core.utils.data_format import DateFormat, check_period_format
-from telebot.credentials import create_table_to_send
+from telebot.output_table_create import create_table_to_send
 
 
 def sensor():
