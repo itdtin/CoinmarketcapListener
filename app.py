@@ -95,7 +95,7 @@ def respond():
             chat_id=chat_id, text=str(len(data)), reply_to_message_id=msg_id
         )
 
-    elif text == "update cmc data":
+    elif text == "/update_data":
         rank_listener.fill_cmc_data()
         bot.sendMessage(
             chat_id=chat_id,
