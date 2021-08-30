@@ -67,7 +67,9 @@ def respond():
     # for debugging purposes only
     print("got text message :", text)
     if text == "/start":
-        bot_welcome = """Welcome to ranking bot"""
+        bot_welcome = """Welcome to ranking bot.\nAllowed commands:\n
+        1. /update_data - upload current Coinmarketcap data.\n
+        2. /info - Show allowed periods for query top gainers"""
         bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
 
     elif text == "/count":
@@ -84,10 +86,20 @@ def respond():
             reply_to_message_id=msg_id,
         )
 
+    elif text == "/info":
+        text_msg = (
+            f"Possible the following commands to get top gainers via date period:\n"
+            f"1. <count> day or <count> days - show top gainers for past <count> of days.\n"
+            f"2. <count> week or <count> weeks - show top gainers for past <count> of weeks.\n"
+            f"3. <count> month or <count> months - show top gainers for past <count> of months.\n"
+            f"4. period <date_start>-<date_end> - show top gainers for passed period. "
+            f"Be aware the format of <date_start> and <date_end> is yyyy.mm.dd, "
+            f"so full query will be like: period 2021.08.01-2021.08.31"
+        )
+        bot.sendMessage(chat_id=chat_id, text=text_msg, reply_to_message_id=msg_id)
+
     elif len(text.strip().split(" ")) == 2:
-        print("dpdpdpdpd")
         range_param = define_query_params(text)
-        print(range_param)
         data = Ranking.get_top_gainers(
             engine=db.engine, count_result=app.config.get("RESULT_COUNT"), **range_param
         )
