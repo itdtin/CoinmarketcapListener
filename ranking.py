@@ -44,7 +44,7 @@ class Ranking:
             f"(last_value(rank) over(partition by cmc_id order by last_update) - "
             f"first_value(rank) over(partition by cmc_id order by last_update)) as gain "
             f"from rank_historical rh where last_update between '{start_date_str}' and '{end_date_str}') as c1 "
-            f"left join currencies c2 on c1.cmc_id=c2.id where gain != 0 group by cmc_id order by gain desc limit {count_result}"
+            f"left join currencies c2 on c1.cmc_id=c2.id where gain > 0 group by cmc_id order by gain desc limit {count_result}"
         )
 
         postgres_query = (
@@ -56,7 +56,7 @@ class Ranking:
             f"last_value(rh.cmc_rank) over(partition by rh.cmc_id order by rh.last_update) last_value,"
             f"row_number() over(partition by rh.cmc_id order by rh.last_update desc) seq "
             f"from rank_historical rh where rh.last_update between '{start_date_str}' and '{end_date_str}') a "
-            f"left join currencies c on a.cmc_id=c.id where seq = 1 and gain != 0 order by gain desc limit {count_result}"
+            f"left join currencies c on a.cmc_id=c.id where seq = 1 and gain > 0 order by gain desc limit {count_result}"
         )
         query = None
         if isinstance(engine.dialect, SQLiteDialect_pysqlite):

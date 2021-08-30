@@ -99,45 +99,6 @@ def respond():
             parse_mode=ParseMode.MARKDOWN_V2,
         )
 
-    #
-    # elif text == "1 day":
-    #     data = Ranking.get_top_gainers(
-    #         engine=db.engine, count_result=app.config.get("RESULT_COUNT"), days=1
-    #     )
-    #     bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
-    #
-    # elif text == "1 week":
-    #     data = Ranking.get_top_gainers(
-    #         engine=db.engine, count_result=app.config.get("RESULT_COUNT"), weeks=1
-    #     )
-    #     bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
-    #
-    # elif text == "1 month":
-    #     data = Ranking.get_top_gainers(
-    #         engine=db.engine, count_result=app.config.get("RESULT_COUNT"), months=1
-    #     )
-    #     table = create_table_to_send(data)
-    #     bot.sendMessage(
-    #         chat_id=chat_id,
-    #         text=f"```{table}```",
-    #         reply_to_message_id=msg_id,
-    #         parse_mode=ParseMode.MARKDOWN_V2,
-    #     )
-    #
-    # elif "period" in text.lower():
-    #     period_range = text.lower().split("period")[1].strip()
-    #     if check_period_format(period_range, only_check=True):
-    #         data = Ranking.get_top_gainers(
-    #             engine=db.engine,
-    #             count_result=app.config.get("RESULT_COUNT"),
-    #             period=period_range,
-    #         )
-    #         bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
-    #     else:
-    #         bot.sendMessage(
-    #             chat_id=chat_id, text="Wrong period format", reply_to_message_id=msg_id
-    #         )
-
     else:
         try:
             # clear the message we got from any non alphabets
@@ -154,7 +115,6 @@ def respond():
                 text="There was a problem in the name you used, please enter different name",
                 reply_to_message_id=msg_id,
             )
-
     return "ok"
 
 
