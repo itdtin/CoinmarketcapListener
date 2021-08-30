@@ -89,14 +89,19 @@ def respond():
     elif text == "/info":
         text_msg = (
             f"Possible the following commands to get top gainers via date period:\n"
-            f"1. <b>Day:</b> '<count> day' or '<count> days' - show top gainers for past <count> of days.\n"
-            f"2. <i>Week:</i> '<count> week' or '<count> weeks' - show top gainers for past <count> of weeks.\n"
-            f"3. Months: '<count> month' or '<count> months' - show top gainers for past <count> of months.\n"
+            f"1. <b>Day:</b> '<count> day' or '<count> days' - show top gainers for past <count> of days.\n\n"
+            f"2. <i>Week:</i> '<count> week' or '<count> weeks' - show top gainers for past <count> of weeks.\n\n"
+            f"3. Months: '<count> month' or '<count> months' - show top gainers for past <count> of months.\n\n"
             f"4. Period: 'period <date_start>-<date_end>' - show top gainers for passed period. "
             f"Be aware the format of <date_start> and <date_end> is yyyy.mm.dd, "
             f"so full query will be like: period 2021.08.01-2021.08.31"
         )
-        bot.sendMessage(chat_id=chat_id, text=text_msg, reply_to_message_id=msg_id)
+        bot.sendMessage(
+            chat_id=chat_id,
+            text=text_msg,
+            reply_to_message_id=msg_id,
+            parse_mode=ParseMode.HTML,
+        )
 
     elif len(text.strip().split(" ")) == 2:
         range_param = define_query_params(text)
