@@ -33,15 +33,15 @@ TOKEN = app.config.get("TG_BOT_TOKEN")
 logger.error(f"token {TOKEN}")
 bot = telegram.Bot(token=TOKEN)
 
-with app.app_context():
-    from db.cmc_entities_models import Currency, RankHistorical
-
-    db.create_all()
-    rank_listener = Coinmarketcap(
-        app.config.get("CMC_BASE_URL"), app.config.get("CMC_API_TOKEN"), db
-    )
-    rank_listener.fill_cmc_data()
-migrate = Migrate(app, db)
+# with app.app_context():
+#     from db.cmc_entities_models import Currency, RankHistorical
+#
+#     db.create_all()
+#     rank_listener = Coinmarketcap(
+#         app.config.get("CMC_BASE_URL"), app.config.get("CMC_API_TOKEN"), db
+#     )
+#     rank_listener.fill_cmc_data()
+# migrate = Migrate(app, db)
 
 
 @app.route("/")
@@ -124,4 +124,7 @@ atexit.register(lambda: sched.shutdown())
 
 
 if __name__ == "__main__":
-    app.run(threaded=True)
+    data = Ranking.get_top_gainers(
+        engine=db.engine, count_result=app.config.get("RESULT_COUNT"), days=5
+    )
+    # app.run(threaded=True)
