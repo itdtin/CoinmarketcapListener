@@ -30,8 +30,8 @@ class Ranking:
             f"from (select cmc_id, last_update as created_date, rank as current_value, "
             f"(last_value(rank) over(partition by cmc_id order by last_update) - "
             f"first_value(rank) over(partition by cmc_id order by last_update)) as gain "
-            f"from rank_historical rh where last_update between '{target_date_str}' and '{curr_date_str}') "
-            f"left join currencies c2 on cmc_id=c2.id where gain != 0 group by cmc_id order by gain desc"
+            f"from rank_historical rh where last_update between '{target_date_str}' and '{curr_date_str}') as c1 "
+            f"left join currencies c2 on c1.cmc_id=c2.id where gain != 0 group by cmc_id order by gain desc"
         )
         d = engine.execute(query).all()
         result = [{k: v for k, v in record.items()} for record in d[:count_result]]

@@ -108,6 +108,6 @@ class Coinmarketcap(BaseAPIClient):
             currency = RankHistorical(
                 cmc_id=currency_data["id"],
                 last_update=datetime.utcnow(),
-                rank=currency_data.get("rank"),
+                cmc_rank=currency_data.get("rank"),
             )
             return currency
