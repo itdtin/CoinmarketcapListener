@@ -1,11 +1,9 @@
 from enum import Enum
 import re
 from datetime import datetime
-from core.logger.logger import logger
 
 
 class DateFormat(Enum):
-
     date_format = "%Y.%m.%d"
     date_re = r"([0-9]{4}.(0[1-9]|1[0-2]).(0[1-9]|[1-2][0-9]|3[0-1]))"
     separator = "-"

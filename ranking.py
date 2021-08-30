@@ -10,12 +10,7 @@ from core.utils.data_format import DateFormat, check_period_format
 
 class Ranking:
     @staticmethod
-    def get_top_gainers(engine, count_result: int, **kwargs):
-        """Get top gainers
-        :param engine:
-        :param count_result: count of result
-        :param kwargs - days=<int>, weeks=<int>, months=<int>
-        """
+    def define_range(**kwargs):
         end_date = datetime.utcnow() + timedelta(days=1)
         start_date = None
         if kwargs.get("days"):
@@ -32,6 +27,16 @@ class Ranking:
         ), f"You should chose date from which will generated report"
         end_date_str = end_date.strftime(DateFormat.date_format.value)
         start_date_str = start_date.strftime(DateFormat.date_format.value)
+        return start_date_str, end_date_str
+
+    @classmethod
+    def get_top_gainers(cls, engine, count_result: int, **kwargs):
+        """Get top gainers
+        :param engine:
+        :param count_result: count of result
+        :param kwargs - days=<int>, weeks=<int>, months=<int>
+        """
+        start_date_str, end_date_str = cls.define_range(**kwargs)
 
         sqlite_query = (
             f"select cmc_id, current_value, gain, max(created_date), c2.ticker, c2.slug "

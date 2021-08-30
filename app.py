@@ -11,8 +11,8 @@ from flask_migrate import Migrate
 from coinmarketcap.cmc_client import Coinmarketcap
 from core.logger.logger import logger
 from ranking import Ranking
-from core.utils.data_format import DateFormat, check_period_format
-from telebot.output_table_create import create_table_to_send
+from telebot.telegram_utils import create_table_to_send, define_query_params
+from core.utils.data_format import check_period_format
 
 
 def sensor():
@@ -66,52 +66,11 @@ def respond():
     text = update.message.text.encode("utf-8").decode()
     # for debugging purposes only
     print("got text message :", text)
-    # the first time you chat with the bot AKA the welcoming message
     if text == "/start":
-        # print the welcoming message
         bot_welcome = """Welcome to ranking bot"""
-        # send the welcoming message
         bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
 
-    elif text == "1 day":
-        data = Ranking.get_top_gainers(
-            engine=db.engine, count_result=app.config.get("RESULT_COUNT"), days=1
-        )
-        bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
-
-    elif text == "1 week":
-        data = Ranking.get_top_gainers(
-            engine=db.engine, count_result=app.config.get("RESULT_COUNT"), days=7
-        )
-        bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
-
-    elif text == "1 month":
-        data = Ranking.get_top_gainers(
-            engine=db.engine, count_result=app.config.get("RESULT_COUNT"), months=1
-        )
-        table = create_table_to_send(data)
-        bot.sendMessage(
-            chat_id=chat_id,
-            text=f"```{table}```",
-            reply_to_message_id=msg_id,
-            parse_mode=ParseMode.MARKDOWN_V2,
-        )
-
-    elif "period" in text.lower():
-        period_range = text.lower().split("period")[1].strip()
-        if check_period_format(period_range, only_check=True):
-            data = Ranking.get_top_gainers(
-                engine=db.engine,
-                count_result=app.config.get("RESULT_COUNT"),
-                period=period_range,
-            )
-            bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
-        else:
-            bot.sendMessage(
-                chat_id=chat_id, text="Wrong period format", reply_to_message_id=msg_id
-            )
-
-    elif text == "count":
+    elif text == "/count":
         data = db.session.query(RankHistorical).all()
         bot.sendMessage(
             chat_id=chat_id, text=str(len(data)), reply_to_message_id=msg_id
@@ -124,6 +83,59 @@ def respond():
             text="Coinmarketcap data is up to date",
             reply_to_message_id=msg_id,
         )
+
+    elif len(text.split(" ")) == 2:
+        range_param = define_query_params(text)
+        data = Ranking.get_top_gainers(
+            engine=db.engine, count_result=app.config.get("RESULT_COUNT"), **range_param
+        )
+        table = create_table_to_send(data)
+        bot.sendMessage(
+            chat_id=chat_id,
+            text=f"```{table}```",
+            reply_to_message_id=msg_id,
+            parse_mode=ParseMode.MARKDOWN_V2,
+        )
+
+    #
+    # elif text == "1 day":
+    #     data = Ranking.get_top_gainers(
+    #         engine=db.engine, count_result=app.config.get("RESULT_COUNT"), days=1
+    #     )
+    #     bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
+    #
+    # elif text == "1 week":
+    #     data = Ranking.get_top_gainers(
+    #         engine=db.engine, count_result=app.config.get("RESULT_COUNT"), weeks=1
+    #     )
+    #     bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
+    #
+    # elif text == "1 month":
+    #     data = Ranking.get_top_gainers(
+    #         engine=db.engine, count_result=app.config.get("RESULT_COUNT"), months=1
+    #     )
+    #     table = create_table_to_send(data)
+    #     bot.sendMessage(
+    #         chat_id=chat_id,
+    #         text=f"```{table}```",
+    #         reply_to_message_id=msg_id,
+    #         parse_mode=ParseMode.MARKDOWN_V2,
+    #     )
+    #
+    # elif "period" in text.lower():
+    #     period_range = text.lower().split("period")[1].strip()
+    #     if check_period_format(period_range, only_check=True):
+    #         data = Ranking.get_top_gainers(
+    #             engine=db.engine,
+    #             count_result=app.config.get("RESULT_COUNT"),
+    #             period=period_range,
+    #         )
+    #         bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
+    #     else:
+    #         bot.sendMessage(
+    #             chat_id=chat_id, text="Wrong period format", reply_to_message_id=msg_id
+    #         )
+
     else:
         try:
             # clear the message we got from any non alphabets
