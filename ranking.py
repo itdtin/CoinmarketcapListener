@@ -44,7 +44,7 @@ class Ranking:
             f"first_value(rh.cmc_rank) over(partition by rh.cmc_id order by rh.last_update) first_value,"
             f"last_value(rh.cmc_rank) over(partition by rh.cmc_id order by rh.last_update) last_value,"
             f"row_number() over(partition by rh.cmc_id order by rh.last_update desc) seq "
-            f'from rank_historical rh  where rh.last_update between "{target_date_str}" and "{curr_date_str}") a '
+            f"from rank_historical rh where rh.last_update between {target_date_str} and {curr_date_str}) a "
             f"left join currencies c on a.cmc_id=c.id where seq = 1 and gain != 0 order by gain desc limit {count_result}"
         )
         query = None
