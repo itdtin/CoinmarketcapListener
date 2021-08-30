@@ -90,8 +90,12 @@ def respond():
             engine=db.engine, count_result=app.config.get("RESULT_COUNT"), months=1
         )
         table = create_table_to_send()
-        update.message.reply_text(f"```{table}```", parse_mode=ParseMode.MARKDOWN_V2)
-        bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
+        bot.sendMessage(
+            chat_id=chat_id,
+            text=f"```{table}```",
+            reply_to_message_id=msg_id,
+            parse_mode=ParseMode.MARKDOWN_V2,
+        )
 
     elif "period" in text.lower():
         period_range = text.lower().split("period")[1].strip()
