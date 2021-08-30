@@ -20,8 +20,10 @@ class Ranking:
         target_date = None
         if kwargs.get("days"):
             target_date = current_date - timedelta(days=kwargs.get("days"))
+        if kwargs.get("weeks"):
+            target_date = current_date - timedelta(weeks=kwargs.get("weeks"))
         if kwargs.get("months"):
-            target_date = current_date - relativedelta(months=kwargs.get("days"))
+            target_date = current_date - relativedelta(months=kwargs.get("months"))
         assert target_date is not None and isinstance(
             target_date, datetime
         ), f"You should chose date from which will generated report"
