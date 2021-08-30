@@ -53,6 +53,7 @@ class Ranking:
         elif isinstance(engine.dialect, PGDialect_psycopg2):
             query = postgres_query
         assert query
+        print(query)
         d = engine.execute(query).all()
         result = [{k: v for k, v in record.items()} for record in d]
         return result

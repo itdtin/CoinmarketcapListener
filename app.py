@@ -124,7 +124,5 @@ atexit.register(lambda: sched.shutdown())
 
 
 if __name__ == "__main__":
-    # data = Ranking.get_top_gainers(
-    #     engine=db.engine, count_result=app.config.get("RESULT_COUNT"), days=5
-    # )
+
     app.run(threaded=True)

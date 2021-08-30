@@ -51,7 +51,7 @@ class Coinmarketcap(BaseAPIClient):
 
     def fill_cmc_data(self):
         current_cmc_data = self.get_id_map()
-        for curr in current_cmc_data:
+        for curr in current_cmc_data[:100]:
             self.fill_and_update_currency_and_related_tables(curr)
         self.db.session.commit()
         self.db.session.close()
