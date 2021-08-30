@@ -17,7 +17,7 @@ def create_table_to_send(data):
     return table
 
 
-def define_query_params(text: str):
+def define_query_params(text: str) -> dict:
     assert len(text.lower().split(" ")) == 2
     count, period = text.lower().split(" ")
     print(count)
@@ -37,4 +37,5 @@ def define_query_params(text: str):
         count = int(count)
         return dict({period: count})
     except:
+        return dict()
         logger.error(f"Incorrect count: {count} for {period}")

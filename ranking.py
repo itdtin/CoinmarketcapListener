@@ -22,9 +22,6 @@ class Ranking:
         if kwargs.get("period"):
             start_date, end_date = check_period_format(kwargs.get("period"))
 
-        assert start_date is not None and isinstance(
-            start_date, datetime
-        ), f"You should chose date from which will generated report"
         end_date_str = end_date.strftime(DateFormat.date_format.value)
         start_date_str = start_date.strftime(DateFormat.date_format.value)
         return start_date_str, end_date_str
