@@ -10,6 +10,7 @@ from flask_migrate import Migrate
 from coinmarketcap.cmc_client import Coinmarketcap
 from core.logger.logger import logger
 from ranking import Ranking
+from core.utils.data_format import DateFormat, check_period_format
 
 
 def sensor():
@@ -87,6 +88,16 @@ def respond():
             engine=db.engine, count_result=app.config.get("RESULT_COUNT"), months=1
         )
         bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
+
+    elif "period" in text.lower():
+        period_range = text.lower().split("period")[1].strip()
+        if check_period_format(period_range, only_check=True):
+            data = Ranking.get_top_gainers(
+                engine=db.engine,
+                count_result=app.config.get("RESULT_COUNT"),
+                period=period_range,
+            )
+            bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
 
     elif text == "count":
         data = db.session.query(RankHistorical).all()

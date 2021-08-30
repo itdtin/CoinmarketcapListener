@@ -1,7 +1,11 @@
 from datetime import datetime, timedelta
+import re
 from dateutil.relativedelta import relativedelta
+
 from sqlalchemy.dialects.sqlite.pysqlite import SQLiteDialect_pysqlite
 from sqlalchemy.dialects.postgresql.psycopg2 import PGDialect_psycopg2
+
+from core.utils.data_format import DateFormat, check_period_format
 
 
 class Ranking:
@@ -12,29 +16,29 @@ class Ranking:
         :param count_result: count of result
         :param kwargs - days=<int>, weeks=<int>, months=<int>
         """
-        global target_date_str
-        date_format = "%Y-%m-%d"
-
-        current_date = datetime.utcnow() + timedelta(days=1)
-        curr_date_str = current_date.strftime(date_format)
-        target_date = None
+        end_date = datetime.utcnow() + timedelta(days=1)
+        start_date = None
         if kwargs.get("days"):
-            target_date = current_date - timedelta(days=kwargs.get("days"))
+            start_date = end_date - timedelta(days=kwargs.get("days"))
         if kwargs.get("weeks"):
-            target_date = current_date - timedelta(weeks=kwargs.get("weeks"))
+            start_date = end_date - timedelta(weeks=kwargs.get("weeks"))
         if kwargs.get("months"):
-            target_date = current_date - relativedelta(months=kwargs.get("months"))
-        assert target_date is not None and isinstance(
-            target_date, datetime
+            start_date = end_date - relativedelta(months=kwargs.get("months"))
+        if kwargs.get("period"):
+            start_date, end_date = check_period_format(kwargs.get("period"))
+
+        assert start_date is not None and isinstance(
+            start_date, datetime
         ), f"You should chose date from which will generated report"
-        target_date_str = target_date.strftime(date_format)
+        end_date_str = end_date.strftime(DateFormat.date_format.value)
+        start_date_str = start_date.strftime(DateFormat.date_format.value)
 
         sqlite_query = (
             f"select cmc_id, current_value, gain, max(created_date), c2.ticker, c2.slug "
             f"from (select cmc_id, last_update as created_date, rank as current_value, "
             f"(last_value(rank) over(partition by cmc_id order by last_update) - "
             f"first_value(rank) over(partition by cmc_id order by last_update)) as gain "
-            f"from rank_historical rh where last_update between '{target_date_str}' and '{curr_date_str}') as c1 "
+            f"from rank_historical rh where last_update between '{start_date_str}' and '{end_date_str}') as c1 "
             f"left join currencies c2 on c1.cmc_id=c2.id where gain != 0 group by cmc_id order by gain desc limit {count_result}"
         )
 
@@ -46,7 +50,7 @@ class Ranking:
             f"first_value(rh.cmc_rank) over(partition by rh.cmc_id order by rh.last_update) first_value,"
             f"last_value(rh.cmc_rank) over(partition by rh.cmc_id order by rh.last_update) last_value,"
             f"row_number() over(partition by rh.cmc_id order by rh.last_update desc) seq "
-            f"from rank_historical rh where rh.last_update between '{target_date_str}' and '{curr_date_str}') a "
+            f"from rank_historical rh where rh.last_update between '{start_date_str}' and '{end_date_str}') a "
             f"left join currencies c on a.cmc_id=c.id where seq = 1 and gain != 0 order by gain desc limit {count_result}"
         )
         query = None
