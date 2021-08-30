@@ -78,6 +78,11 @@ def respond():
         data = Ranking.get_top_gainers(
             engine=db.engine, count_result=app.config.get("RESULT_COUNT"), days=5
         )
+        data = (
+            data
+            if len(data) > 0
+            else "In this period no one project didn't move on ranking score"
+        )
         bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
 
     elif text == "count":
