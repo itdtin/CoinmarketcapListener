@@ -94,6 +94,14 @@ def respond():
         bot.sendMessage(
             chat_id=chat_id, text=str(len(data)), reply_to_message_id=msg_id
         )
+
+    elif text == "update cmc data":
+        rank_listener.fill_cmc_data()
+        bot.sendMessage(
+            chat_id=chat_id,
+            text="Coinmarketcap data is up to date",
+            reply_to_message_id=msg_id,
+        )
     else:
         try:
             # clear the message we got from any non alphabets
