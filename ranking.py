@@ -60,7 +60,7 @@ class Ranking:
             query = postgres_query
         assert query
         d = engine.execute(query).all()
-        allowed_fiellds = ["cmc_id", "last_value", "end_value"]
+        allowed_fiellds = ["cmc_id", "last_value", "first_value"]
         result = [
             [v for k, v in record.items() if k not in allowed_fiellds] for record in d
         ]

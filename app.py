@@ -89,7 +89,6 @@ def respond():
         data = Ranking.get_top_gainers(
             engine=db.engine, count_result=app.config.get("RESULT_COUNT"), months=1
         )
-        print(data)
         table = create_table_to_send(data)
         bot.sendMessage(
             chat_id=chat_id,
