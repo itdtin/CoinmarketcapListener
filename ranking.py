@@ -37,7 +37,7 @@ class Ranking:
         )
 
         postgres_query = (
-            f"select cmc_id, c.ticker, update_date, a.first_value, a.last_value, gain "
+            f"select cmc_id, c.ticker, a.first_value, a.last_value, gain "
             f"from (select rh.cmc_id as cmc_id, rh.last_update as update_date,"
             f"(first_value(rh.cmc_rank) over(partition by rh.cmc_id order by rh.last_update) - "
             f"last_value(rh.cmc_rank) over(partition by rh.cmc_id order by rh.last_update)) as gain,"
