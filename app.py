@@ -2,6 +2,7 @@ import atexit
 import re
 
 import telegram
+from telegram import ParseMode
 from flask import Flask, request
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask_sqlalchemy import SQLAlchemy
@@ -11,6 +12,7 @@ from coinmarketcap.cmc_client import Coinmarketcap
 from core.logger.logger import logger
 from ranking import Ranking
 from core.utils.data_format import DateFormat, check_period_format
+from telebot.credentials import create_table_to_send
 
 
 def sensor():
@@ -87,6 +89,8 @@ def respond():
         data = Ranking.get_top_gainers(
             engine=db.engine, count_result=app.config.get("RESULT_COUNT"), months=1
         )
+        table = create_table_to_send()
+        update.message.reply_text(f"```{table}```", parse_mode=ParseMode.MARKDOWN_V2)
         bot.sendMessage(chat_id=chat_id, text=data, reply_to_message_id=msg_id)
 
     elif "period" in text.lower():
