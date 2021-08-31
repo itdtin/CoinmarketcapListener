@@ -112,15 +112,17 @@ def respond():
                 count_result=app.config.get("RESULT_COUNT"),
                 **range_param,
             )
-            print(f"Data: {data}")
             if data:
-                table = create_table_to_send(data)
-                bot.sendMessage(
-                    chat_id=chat_id,
-                    text=f"```{table}```",
-                    reply_to_message_id=msg_id,
-                    parse_mode=ParseMode.MARKDOWN_V2,
-                )
+                data = create_table_to_send(data)
+            else:
+                data = "<s>{text}</s>\nIncorrect query!!!"
+
+            bot.sendMessage(
+                chat_id=chat_id,
+                text=f"```{data}```",
+                reply_to_message_id=msg_id,
+                parse_mode=ParseMode.MARKDOWN_V2,
+            )
         else:
             bot.sendMessage(
                 chat_id=chat_id,
