@@ -71,4 +71,5 @@ class Ranking:
                 [v for k, v in record.items() if k not in allowed_fiellds]
                 for record in d
             ]
+            print(result)
             return result
