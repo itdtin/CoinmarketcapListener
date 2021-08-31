@@ -111,13 +111,14 @@ def respond():
                 count_result=app.config.get("RESULT_COUNT"),
                 **range_param,
             )
-            table = create_table_to_send(data)
-            bot.sendMessage(
-                chat_id=chat_id,
-                text=f"```{table}```",
-                reply_to_message_id=msg_id,
-                parse_mode=ParseMode.MARKDOWN_V2,
-            )
+            if data:
+                table = create_table_to_send(data)
+                bot.sendMessage(
+                    chat_id=chat_id,
+                    text=f"```{table}```",
+                    reply_to_message_id=msg_id,
+                    parse_mode=ParseMode.MARKDOWN_V2,
+                )
         else:
             bot.sendMessage(
                 chat_id=chat_id,
