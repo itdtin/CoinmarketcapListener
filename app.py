@@ -105,12 +105,14 @@ def respond():
 
     elif len(text.strip().split(" ")) == 2:
         range_param = define_query_params(text)
+        print(range_param)
         if isinstance(range_param, dict) and len(range_param.items()) > 0:
             data = Ranking.get_top_gainers(
                 engine=db.engine,
                 count_result=app.config.get("RESULT_COUNT"),
                 **range_param,
             )
+            print(f"Data: {data}")
             if data:
                 table = create_table_to_send(data)
                 bot.sendMessage(
