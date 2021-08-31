@@ -37,7 +37,7 @@ class Ranking:
         :param kwargs - days=<int>, weeks=<int>, months=<int>
         """
         start_date_str, end_date_str = cls.define_range(**kwargs)
-
+        print(start_date_str, end_date_str)
         sqlite_query = (
             f"select cmc_id, current_value, gain, max(created_date), c2.ticker, c2.slug "
             f"from (select cmc_id, last_update as created_date, rank as current_value, "
@@ -69,4 +69,5 @@ class Ranking:
         result = [
             [v for k, v in record.items() if k not in allowed_fiellds] for record in d
         ]
+        print(result)
         return result
