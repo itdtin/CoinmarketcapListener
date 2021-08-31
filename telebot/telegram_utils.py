@@ -20,7 +20,6 @@ def create_table_to_send(data):
 def define_query_params(text: str) -> dict:
     assert len(text.lower().split(" ")) == 2
     count, period = text.lower().split(" ")
-    print(count)
     if count.startswith("period"):
         period = "period"
         count = text.lower().split("period")[1].strip()
