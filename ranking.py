@@ -36,6 +36,7 @@ class Ranking:
         :param kwargs - days=<int>, weeks=<int>, months=<int>
         """
         start_date_str, end_date_str = cls.define_range(**kwargs)
+        print(start_date_str, end_date_str)
         if start_date_str and end_date_str:
 
             sqlite_query = (
