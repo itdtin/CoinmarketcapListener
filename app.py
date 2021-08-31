@@ -5,7 +5,6 @@ import telegram
 from telegram import ParseMode
 from flask import Flask, request
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
@@ -13,7 +12,6 @@ from coinmarketcap.cmc_client import Coinmarketcap
 from core.logger.logger import logger
 from ranking import Ranking
 from telebot.telegram_utils import create_table_to_send, define_query_params
-from core.utils.data_format import check_period_format
 
 
 def sensor():
@@ -22,11 +20,8 @@ def sensor():
     rank_listener.fill_cmc_data()
 
 
-trigger = CronTrigger(year="*", month="*", day="*", hour="3", minute="20", second="0")
-
-
 sched = BackgroundScheduler(daemon=True, timezone="UTC")
-sched.add_job(sensor, trigger=trigger)
+sched.add_job(sensor, "interval", days=1)
 sched.start()
 
 
