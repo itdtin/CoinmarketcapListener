@@ -21,13 +21,12 @@ class Ranking:
             start_date = end_date - relativedelta(months=kwargs.get("months"))
         if kwargs.get("period"):
             start_date, end_date = check_period_format(kwargs.get("period"))
-
-        assert start_date is not None and isinstance(
-            start_date, datetime
-        ), f"You should chose date from which will generated report"
-        end_date_str = end_date.strftime(DateFormat.date_format.value)
-        start_date_str = start_date.strftime(DateFormat.date_format.value)
-        return start_date_str, end_date_str
+        if isinstance(end_date, datetime) and isinstance(start_date, datetime):
+            end_date_str = end_date.strftime(DateFormat.date_format.value)
+            start_date_str = start_date.strftime(DateFormat.date_format.value)
+            return start_date_str, end_date_str
+        else:
+            return None, None
 
     @classmethod
     def get_top_gainers(cls, engine, count_result: int, **kwargs):
@@ -38,6 +37,7 @@ class Ranking:
         """
         start_date_str, end_date_str = cls.define_range(**kwargs)
         print(start_date_str, end_date_str)
+
         sqlite_query = (
             f"select cmc_id, current_value, gain, max(created_date), c2.ticker, c2.slug "
             f"from (select cmc_id, last_update as created_date, rank as current_value, "
@@ -71,3 +71,4 @@ class Ranking:
         ]
         print(result)
         return result
+      
