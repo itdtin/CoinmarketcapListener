@@ -114,7 +114,7 @@ def respond():
             if data:
                 data = create_table_to_send(data)
             else:
-                data = "<s>{text}</s>\nNo data exist for gainers in choosen period"
+                data = "No data exist for gainers in chosen period"
 
             bot.sendMessage(
                 chat_id=chat_id,
