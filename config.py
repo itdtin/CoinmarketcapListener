@@ -38,6 +38,7 @@ class TestingConfig(Config):
     DEBUG = True
     DATABASE_NAME = "ranklistener.sqlite"
     SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
+    print(SQLALCHEMY_DATABASE_URI)
     # SQLALCHEMY_DATABASE_URI = f"sqlite:///{path}/{DATABASE_NAME}"
     CMC_API_TOKEN = os.environ.get("CMC_API_TOKEN")
     CMC_BASE_URL = "https://pro-api.coinmarketcap.com/"
