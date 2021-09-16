@@ -21,7 +21,8 @@ def sensor():
 
 
 sched = BackgroundScheduler(daemon=True, timezone="UTC")
-sched.add_job(sensor, "interval", days=1)
+# sched.add_job(sensor, "interval", seconds=10)
+sched.add_job(sensor, trigger="cron", second="10")
 sched.start()
 
 
