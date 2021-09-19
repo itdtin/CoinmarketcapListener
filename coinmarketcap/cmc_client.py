@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 
@@ -7,6 +7,7 @@ from core.clients.api.baseclient import BaseAPIClient
 from coinmarketcap.endpoints import CMCEndpoints
 from core.utils.http_constants import HttpHeaderValues, HttpHeadersKeys
 from core.logger.logger import logger
+from config import Config
 
 
 class Coinmarketcap(BaseAPIClient):
@@ -49,7 +50,18 @@ class Coinmarketcap(BaseAPIClient):
             return result.json()
         return result
 
+    def rotate_data_in_db(self):
+        from db.cmc_entities_models import RankHistorical
+
+        rotate_period_proper_start_date = (
+            datetime.now() - timedelta(days=Config.ROTATE_PERIOD)
+        ).strftime("%Y-%m-%d") + " 00:00:00"
+        query = f"delete from rank_historical where last_update < '{rotate_period_proper_start_date}'"
+        result = self.db.engine.execute(query)
+        logger.error(result)
+
     def fill_cmc_data(self):
+        self.rotate_data_in_db()
         current_cmc_data = self.get_id_map()
         for curr in current_cmc_data[:100]:
             self.fill_and_update_currency_and_related_tables(curr)
@@ -111,3 +123,7 @@ class Coinmarketcap(BaseAPIClient):
                 cmc_rank=currency_data.get("rank"),
             )
             return currency
+
+
+if __name__ == "__main__":
+    c = Coinmarketcap()

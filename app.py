@@ -31,12 +31,15 @@ with app.app_context():
     rank_listener = Coinmarketcap(
         app.config.get("CMC_BASE_URL"), app.config.get("CMC_API_TOKEN"), db
     )
+    rank_listener.fill_cmc_data()
 migrate = Migrate(app, db)
 
 
 sched = BackgroundScheduler(daemon=True, timezone="UTC")
 # sched.add_job(sensor, "interval", seconds=10)
-sched.add_job(rank_listener.fill_cmc_data, trigger="cron", hour="0")
+sched.add_job(
+    rank_listener.fill_cmc_data, trigger="cron", hour="0"
+)  # Run every day at 0:00:00
 sched.start()
 
 
@@ -105,11 +108,10 @@ def respond():
                 count_result=app.config.get("RESULT_COUNT"),
                 **range_param,
             )
-            logger.error(data)
             if data:
                 data = create_table_to_send(data)
             else:
-                data = "No data exist for gainers in chosen period"
+                data = " No data exist for gainers in chosen period "
 
             bot.sendMessage(
                 chat_id=chat_id,
