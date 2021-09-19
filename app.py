@@ -99,7 +99,6 @@ def respond():
 
     elif len(text.strip().split(" ")) == 2:
         range_param = define_query_params(text)
-        print(range_param)
         if isinstance(range_param, dict) and len(range_param.items()) > 0:
             data = Ranking.get_top_gainers(
                 engine=db.engine,
