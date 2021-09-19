@@ -53,12 +53,14 @@ class Coinmarketcap(BaseAPIClient):
     def rotate_data_in_db(self):
         from db.cmc_entities_models import RankHistorical
 
-        rotate_period_proper_start_date = (
-            datetime.now() - timedelta(days=Config.ROTATE_PERIOD)
-        ).strftime("%Y-%m-%d") + " 00:00:00"
-        query = f"delete from rank_historical where last_update < '{rotate_period_proper_start_date}'"
-        result = self.db.engine.execute(query)
-        logger.error(result)
+        try:
+            rotate_period_proper_start_date = (
+                datetime.now() - timedelta(days=Config.ROTATE_PERIOD)
+            ).strftime("%Y-%m-%d") + " 00:00:00"
+            query = f"delete from rank_historical where last_update < '{rotate_period_proper_start_date}'"
+            self.db.engine.execute(query)
+        except Exception as e:
+            logger.error(e)
 
     def fill_cmc_data(self):
         self.rotate_data_in_db()
