@@ -16,4 +16,4 @@ class Config:
     TG_WEBHOOK = "https://cmclistener.herokuapp.com/"
 
     RESULT_COUNT = 10
-    ROTATE_PERIOD = 2  # count of days
+    ROTATE_PERIOD = 365  # count of days

@@ -51,8 +51,7 @@ class Coinmarketcap(BaseAPIClient):
         return result
 
     def rotate_data_in_db(self):
-        from db.cmc_entities_models import RankHistorical
-
+        """Check rotate period and delete oldest records"""
         try:
             rotate_period_proper_start_date = (
                 datetime.now() - timedelta(days=Config.ROTATE_PERIOD)
@@ -65,7 +64,7 @@ class Coinmarketcap(BaseAPIClient):
     def fill_cmc_data(self):
         self.rotate_data_in_db()
         current_cmc_data = self.get_id_map()
-        for curr in current_cmc_data[:100]:
+        for curr in current_cmc_data[:100]:  # Todo delete slice into production
             self.fill_and_update_currency_and_related_tables(curr)
         self.db.session.commit()
         self.db.session.close()
