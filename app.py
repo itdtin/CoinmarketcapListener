@@ -14,20 +14,8 @@ from ranking import Ranking
 from telebot.telegram_utils import create_table_to_send, define_query_params
 
 
-def sensor():
-    """ Function for test purposes. """
-
-    rank_listener.fill_cmc_data()
-
-
-sched = BackgroundScheduler(daemon=True, timezone="UTC")
-# sched.add_job(sensor, "interval", seconds=10)
-sched.add_job(sensor, trigger="interval", seconds=10)
-sched.start()
-
-
 app = Flask(__name__)
-app.config.from_object("config.DevelopmentConfig")
+app.config.from_object("config.Config")
 db = SQLAlchemy(app)
 
 global bot
@@ -44,6 +32,12 @@ with app.app_context():
         app.config.get("CMC_BASE_URL"), app.config.get("CMC_API_TOKEN"), db
     )
 migrate = Migrate(app, db)
+
+
+sched = BackgroundScheduler(daemon=True, timezone="UTC")
+# sched.add_job(sensor, "interval", seconds=10)
+sched.add_job(rank_listener.fill_cmc_data, trigger="interval", seconds=10)
+sched.start()
 
 
 @app.route("/")
