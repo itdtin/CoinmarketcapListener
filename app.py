@@ -105,6 +105,7 @@ def respond():
                 count_result=app.config.get("RESULT_COUNT"),
                 **range_param,
             )
+            logger.error(data)
             if data:
                 data = create_table_to_send(data)
             else:
