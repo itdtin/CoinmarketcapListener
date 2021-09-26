@@ -11,7 +11,7 @@ from core.utils.data_format import DateFormat, check_period_format
 class Ranking:
     @staticmethod
     def define_range(**kwargs):
-        end_date = datetime.utcnow() + timedelta(days=1)
+        end_date = datetime.utcnow()
         start_date = None
         if kwargs.get("days"):
             start_date = end_date - timedelta(days=kwargs.get("days"))
