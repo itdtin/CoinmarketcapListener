@@ -11,7 +11,7 @@ from core.utils.data_format import DateFormat, check_period_format
 class Ranking:
     @staticmethod
     def define_range(**kwargs):
-        end_date = datetime.utcnow()
+        end_date = datetime.utcnow() + timedelta(hours=1)
         start_date = None
         if kwargs.get("days"):
             start_date = end_date - timedelta(days=kwargs.get("days"))
@@ -64,7 +64,7 @@ class Ranking:
                 query = postgres_query
             assert query
             d = engine.execute(query).all()
-            allowed_fiellds = ["cmc_id", "last_value", "first_value"]
+            allowed_fiellds = ["cmc_id", "first_value"]
             result = [
                 [v for k, v in record.items() if k not in allowed_fiellds]
                 for record in d
