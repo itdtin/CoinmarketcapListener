@@ -70,3 +70,8 @@ class Ranking:
                 for record in d
             ]
             return result
+
+    @staticmethod
+    def set_count_results(app, count: int):
+        app.config.RESULT_COUNT = count
+        return
