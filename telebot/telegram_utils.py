@@ -7,14 +7,14 @@ from core.logger.logger import logger
 
 
 def create_table_to_send(data):
-    table = pt.PrettyTable(["Ticker", "Slug", "Gain", "CurrentPosition"])
+    table = pt.PrettyTable(["Ticker", "Slug", "CurrentPosition", "Gain"])
     table.align["Ticker"] = "l"
     table.align["Slug"] = "l"
+    table.align["CurrentPosition"] = "l"
     table.align["Gain"] = "r"
-    table.align["CurrentPosition"] = "r"
 
-    for ticker, slug, gain, current_pos in data:
-        table.add_row([ticker, slug, gain, current_pos])
+    for ticker, slug, current_pos, gain in data:
+        table.add_row([ticker, slug, current_pos, gain])
 
     return table
 
