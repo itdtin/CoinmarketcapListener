@@ -75,22 +75,6 @@ def respond():
             chat_id=chat_id, text=str(len(data)), reply_to_message_id=msg_id
         )
 
-    elif text.startswith("set_count"):
-        try:
-            count = int(text.split(" ")[1])
-            Ranking.set_count_results(app, count)
-            bot.sendMessage(
-                chat_id=chat_id,
-                text=f"```Current count of results is {count}```",
-                reply_to_message_id=msg_id,
-            )
-        except TypeError as e:
-            bot.sendMessage(
-                chat_id=chat_id,
-                text=f"```Invalid count for set```",
-                reply_to_message_id=msg_id,
-            )
-
     elif text == "/update_data":
         rank_listener.fill_cmc_data()
         bot.sendMessage(
