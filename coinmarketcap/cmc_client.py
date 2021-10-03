@@ -65,7 +65,7 @@ class Coinmarketcap(BaseAPIClient):
     def fill_cmc_data(self):
         self.rotate_data_in_db()
         current_cmc_data = self.get_id_map()
-        with self.Session as session:
+        with self.Session() as session:
             for curr in current_cmc_data[:100]:  # Todo delete slice into production
                 self.fill_and_update_currency_and_related_tables(curr, session)
             session.commit()
