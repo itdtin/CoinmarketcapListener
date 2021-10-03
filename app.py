@@ -28,7 +28,7 @@ with app.app_context():
 
     db.create_all()
     rank_listener = Coinmarketcap(
-        app.config.get("CMC_BASE_URL"), app.config.get("CMC_API_TOKEN"), db
+        app.config.get("CMC_BASE_URL"), app.config.get("CMC_API_TOKEN"), db.engine
     )
     rank_listener.fill_cmc_data()
 migrate = Migrate(app, db)
