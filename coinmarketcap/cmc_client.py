@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from datetime import datetime, timedelta
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import sessionmaker
 
 from core.clients.api.baseclient import BaseAPIClient
 from coinmarketcap.endpoints import CMCEndpoints
@@ -13,7 +13,7 @@ from config import Config
 class Coinmarketcap(BaseAPIClient):
     """Class for working with Sapio Exemplar"""
 
-    def __init__(self, base_url: str, api_token: str, db):
+    def __init__(self, base_url: str, api_token: str, db_engine):
         super(Coinmarketcap, self).__init__(base_url, api_token)
         self.headers = {
             HttpHeadersKeys.cmc_api_token.value: api_token,
@@ -22,7 +22,8 @@ class Coinmarketcap(BaseAPIClient):
         self.set_headers(self.headers)
         self.endpoints = CMCEndpoints
         self.ssl_verification_check()
-        self.db = db
+        self.db_engine = db_engine
+        self.Session = sessionmaker(db_engine)
 
     @classmethod
     def __call__(cls, *args, **kwargs):
@@ -57,36 +58,34 @@ class Coinmarketcap(BaseAPIClient):
                 datetime.now() - timedelta(days=Config.ROTATE_PERIOD)
             ).strftime("%Y-%m-%d") + " 00:00:00"
             query = f"delete from rank_historical where last_update < '{rotate_period_proper_start_date}'"
-            self.db.engine.execute(query)
+            self.db_engine.execute(query)
         except Exception as e:
             logger.error(e)
 
     def fill_cmc_data(self):
         self.rotate_data_in_db()
         current_cmc_data = self.get_id_map()
-        for curr in current_cmc_data[:100]:  # Todo delete slice into production
-            self.fill_and_update_currency_and_related_tables(curr)
-        self.db.session.commit()
-        self.db.session.close()
+        with self.Session() as session:
+            for curr in current_cmc_data[:100]:  # Todo delete slice into production
+                self.fill_and_update_currency_and_related_tables(curr, session)
+            session.commit()
         logger.error(f"Updated CoinMarketCap data")
 
-    def fill_and_update_currency_and_related_tables(self, currency_data: dict):
+    def fill_and_update_currency_and_related_tables(self, currency_data: dict, session):
         """Fill Currency record and related Platform record and fill rank_historical record"""
         from db.cmc_entities_models import Currency
 
-        existing = (
-            self.db.session.query(Currency).filter_by(id=currency_data["id"]).first()
-        )
+        existing = session.query(Currency).filter_by(id=currency_data["id"]).first()
         currency = self.create_update_currency(currency_data)
         rank = self.create_update_rank_historical(currency_data)
-        self.db.session.add(rank)
+        session.add(rank)
         if not existing:  # Check to existing currency in current session
-            self.db.session.add(currency)
+            session.add(currency)
         else:
             to_update = Currency.query.filter_by(id=currency_data["id"]).first()
             if not currency == to_update:
                 self.create_update_currency(currency_data, to_update)
-                self.db.session.commit()
+                session.commit()
                 logger.debug(f"Updated Currency: {currency_data['slug']}")
 
     @staticmethod
