@@ -117,3 +117,15 @@ def respond():
                 reply_to_message_id=msg_id,
             )
     return "ok"
+
+
+@telegram_routes.route("/setwebhook", methods=["GET", "POST"])
+def set_webhook():
+    # we use the bot object to link the bot to our app which live
+    # in the link provided by URL
+    s = bot.setWebhook("{URL}{HOOK}".format(URL=Config.TG_WEBHOOK, HOOK=TOKEN))
+    # something to let us know things work
+    if s:
+        return "webhook setup ok"
+    else:
+        return "webhook setup failed"
