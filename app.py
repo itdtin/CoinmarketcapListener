@@ -16,9 +16,6 @@ db = SQLAlchemy(app)
 app.register_blueprint(telegram_routes)
 app.register_blueprint(ui_routes)
 
-global bot
-global TOKEN
-
 
 with app.app_context():
     from db.cmc_entities_models import Currency, RankHistorical
@@ -43,5 +40,4 @@ atexit.register(lambda: sched.shutdown())
 
 
 if __name__ == "__main__":
-
     app.run(threaded=True)
